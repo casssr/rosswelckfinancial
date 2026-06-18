@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sign in — Rosswelck financial</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="login" class="screen active">
+  <div class="login-mural">
+    <div class="mark">Rosswelck <em>Financial</em> </div>
+    <div class="login-mural-quote">A clear ledger.<br>Every balance,<br>every request,<br>accounted for.</div>
+    <div class="login-mural-foot">Account Holder &amp; Staff Portal</div>
+  </div>
+  <div class="login-form-side">
+    <div class="login-form-wrap">
+      <button class="back-link" onclick="location.href='index.html'">← Back to home</button>
+      <h1>Sign in</h1>
+      <p class="sub">Enter your credentials to access your account.</p>
+      <div class="login-err" id="login-err"></div>
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="lu" autocomplete="username" placeholder="e.g. admin"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="lp" autocomplete="current-password" placeholder="••••••••"/>
+      </div>
+      <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:13px;">
+        Sign in
+      </button>
+
+      <div id="debug-box" style="display:none;margin-top:16px;padding:12px 14px;background:#fff3cd;border:1px solid #ffc107;border-radius:8px;font-size:12px;font-family:monospace;word-break:break-all;"></div>
+
+ 
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+// Check if already logged in
+(function() {
+  const s = session.get();
+  if (s && s.id) {
+    location.href = s.role === 'admin' ? 'admin.html' : 'dashboard.html';
+  }
+})();
+
+async function doLogin() {
+  const username = $('lu').value.trim();
+  const password = $('lp').value.trim();
+  const errEl    = $('login-err');
+  const debugBox = $('debug-box');
+
+  errEl.textContent = '';
+  errEl.classList.remove('show');
+  debugBox.style.display = 'none';
+
+  if (!username || !password) {
+    errEl.textContent = 'Please enter your username and password.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  const btn = $('login-btn');
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    // Step 1: look up by username only first
+    const rows = await db.query('accounts', {
+      filter: { username: `eq.${username}` },
+      limit: 1,
+    });
+
+    // Debug info (remove after testing)
+    if (rows.length === 0) {
+      debugBox.style.display = 'block';
+      debugBox.textContent = `No account found for username: `;
+      errEl.textContent = 'Username not found. ';
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'Sign in';
+      return;
+    }
+
+    const user = rows[0];
+
+    // Step 2: check password client-side (plain text for internal tool)
+    if (user.password_hash !== password) {
+      debugBox.style.display = 'block';
+      debugBox.textContent = `Username found ✓ but password mismatch. `;
+      errEl.textContent = 'Incorrect password. ';
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'Sign in';
+      return;
+    }
+
+    // Login success
+    session.set(user);
+    location.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+
+  } catch (e) {
+    console.error('Login error:', e);
+    debugBox.style.display = 'block';
+    debugBox.textContent = 'API error: ' + JSON.stringify(e);
+    errEl.textContent = 'Connection error.';
+    errEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+$('login-btn').addEventListener('click', doLogin);
+$('lp').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+$('lu').addEventListener('keydown', e => { if (e.key === 'Enter') $('lp').focus(); });
+</script>
+</body>
+</html>

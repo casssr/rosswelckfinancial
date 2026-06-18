@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin — Rosswelck Financial</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div id="app" style="display:none;">
+
+<header class="app-bar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mark">Rosswelck<em>Financial</em>  <span style="font-family:var(--fm);font-size:10px;letter-spacing:.14em;color:var(--gold2);margin-left:8px;vertical-align:middle;">ADMIN</span></div>
+  </div>
+  <div class="app-bar-right">
+    <div class="app-bar-user"><div class="uname" id="bar-name">—</div><div class="urole">Administrator</div></div>
+    <div id="bar-avatar" style="width:36px;height:36px;border-radius:50%;background:rgba(196,154,60,.2);border:1.5px solid rgba(196,154,60,.4);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;color:var(--gold2);overflow:hidden;flex-shrink:0;"></div>
+    <button class="btn btn-ghost-light btn-sm" id="signout-btn">Sign out</button>
+  </div>
+</header>
+
+<div class="app-layout">
+  <div class="sidebar-backdrop" onclick="closeSidebar()"></div>
+  <nav class="sidebar">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-item active" data-page="activity" onclick="showPage('activity')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Activity feed
+    </a>
+    <div class="nav-section-label">Requests</div>
+    <a class="nav-item" data-page="withdrawals" onclick="showPage('withdrawals')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Withdrawals <span id="wd-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:999px;font-weight:700;display:none;"></span>
+    </a>
+    <a class="nav-item" data-page="deposits" onclick="showPage('deposits')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      Deposits <span id="dep-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:999px;font-weight:700;display:none;"></span>
+    </a>
+    <a class="nav-item" data-page="complaints" onclick="showPage('complaints')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Complaints <span id="comp-badge" style="margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:1px 7px;border-radius:999px;font-weight:700;display:none;"></span>
+    </a>
+    <div class="nav-section-label">Accounts</div>
+    <a class="nav-item" data-page="accounts" onclick="showPage('accounts')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      All accounts
+    </a>
+    <a class="nav-item" data-page="joint" onclick="showPage('joint')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Joint accounts
+    </a>
+    <a class="nav-item" data-page="newaccount" onclick="showPage('newaccount')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+      Add account
+    </a>
+    <div class="nav-section-label">Finance</div>
+    <a class="nav-item" data-page="ledger" onclick="showPage('ledger')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Ledger
+    </a>
+  </nav>
+
+  <main class="main-content">
+
+    <!-- ACTIVITY -->
+    <div id="page-activity" class="tab-panel active">
+      <div class="section-header"><h1>Activity feed</h1><button class="btn btn-outline btn-sm" onclick="loadActivity().then(renderActivity)">Refresh</button></div>
+      <div class="grid3" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-label">Pending withdrawals</div><div class="stat-val gold" id="s-pend-wd">—</div></div>
+        <div class="stat-card"><div class="stat-label">Open complaints</div><div class="stat-val" style="color:var(--red)" id="s-open-comp">—</div></div>
+        <div class="stat-card"><div class="stat-label">Total accounts</div><div class="stat-val" id="s-accts">—</div></div>
+      </div>
+      <div class="card card-pad">
+        <h2>Recent activity</h2>
+        <p class="card-sub">All withdrawals, deposits, account changes and messages — newest first.</p>
+        <ul class="act-list" id="act-list"></ul>
+      </div>
+    </div>
+
+    <!-- WITHDRAWALS -->
+    <div id="page-withdrawals" class="tab-panel">
+      <div class="page-title">Withdrawal requests</div>
+      <div class="page-sub">Approve to deduct funds from the holder's balance, or reject to leave it unchanged.</div>
+      <div class="card card-pad" style="margin-bottom:20px;">
+        <h2>Pending</h2>
+        <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Account holder</th><th>Account #</th><th class="amt">Amount</th><th>Note</th><th>Status</th><th></th></tr></thead><tbody id="wd-pending"></tbody></table></div>
+      </div>
+      <div class="card card-pad">
+        <h2>Processed</h2>
+        <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Holder</th><th class="amt">Amount</th><th>Note</th><th>Status</th><th>Processed by</th></tr></thead><tbody id="wd-processed"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- DEPOSITS -->
+    <div id="page-deposits" class="tab-panel">
+      <div class="page-title">Deposit requests</div>
+      <div class="page-sub">Verify payment and credit the account holder's balance.</div>
+      <div class="card card-pad">
+        <h2>Pending deposit requests</h2>
+        <p class="card-sub">These come from customers who have submitted deposit requests. Verify payment before approving.</p>
+        <div id="dep-requests"></div>
+      </div>
+    </div>
+
+    <!-- COMPLAINTS -->
+    <div id="page-complaints" class="tab-panel">
+      <div class="page-title">Complaints &amp; requests</div>
+      <div class="page-sub">Messages from account holders. Reply directly from here.</div>
+      <div id="complaints-list"></div>
+    </div>
+
+    <!-- ACCOUNTS -->
+    <div id="page-accounts" class="tab-panel">
+      <div class="section-header"><h1>All accounts</h1><button class="btn btn-gold btn-sm" onclick="showPage('newaccount')">+ Add account</button></div>
+      <div class="card card-pad">
+        <div class="tbl-wrap"><table><thead><tr><th>Account #</th><th>Name</th><th>Username</th><th>Role</th><th class="amt">Balance</th><th>Email</th><th></th></tr></thead><tbody id="accounts-table"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- JOINT ACCOUNTS -->
+    <div id="page-joint" class="tab-panel">
+      <div class="section-header"><h1>Joint accounts</h1><button class="btn btn-gold btn-sm" onclick="openJointModal()">+ Create joint account</button></div>
+      <div class="card card-pad">
+        <div class="tbl-wrap"><table><thead><tr><th>Account #</th><th>Name</th><th>Owner 1</th><th>Owner 2</th><th class="amt">Balance</th><th></th></tr></thead><tbody id="joint-table"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ADD ACCOUNT -->
+    <div id="page-newaccount" class="tab-panel">
+      <div class="page-title">Create account</div>
+      <div class="page-sub">Add a new account holder or administrator.</div>
+      <div class="card card-pad" style="max-width:560px;">
+        <div class="avatar-upload">
+          <div class="avatar-preview" id="na-preview" style="font-size:28px;">👤</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Profile picture</div>
+            <div style="font-size:13px;color:var(--text3);margin-bottom:8px;">Upload a photo for this account holder</div>
+            <input type="file" id="na-avatar-file" accept="image/*" style="font-size:12px;" onchange="previewAvatar(this,'na-preview')"/>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Full name</label><input type="text" id="na-name"/></div>
+          <div class="field"><label>Username</label><input type="text" id="na-user"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Password</label><input type="text" id="na-pass"/></div>
+          <div class="field"><label>Role</label><select id="na-role"><option value="user">Account holder</option><option value="admin">Administrator</option></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Email (optional)</label><input type="email" id="na-email"/></div>
+          <div class="field"><label>Phone (optional)</label><input type="text" id="na-phone"/></div>
+        </div>
+        <div class="field"><label>Opening balance ($)</label><input type="number" id="na-bal" value="0" min="0" step="0.01"/></div>
+        <button class="btn btn-gold" id="na-btn" style="width:100%;justify-content:center;">Create account</button>
+      </div>
+    </div>
+
+    <!-- LEDGER -->
+    <div id="page-ledger" class="tab-panel">
+      <div class="page-title">Transaction ledger</div>
+      <div class="page-sub">Every credit and debit across all accounts, newest first.</div>
+      <div class="card card-pad">
+        <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Account holder</th><th>Description</th><th>Type</th><th class="amt">Amount</th></tr></thead><tbody id="ledger-table"></tbody></table></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<!-- EDIT ACCOUNT MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
+    <h3>Edit account</h3>
+    <input type="hidden" id="em-id"/>
+    <div class="avatar-upload">
+      <div class="avatar-preview" id="em-preview"></div>
+      <div>
+        <div style="font-weight:600;font-size:14px;margin-bottom:4px;">Profile picture</div>
+        <input type="file" id="em-avatar-file" accept="image/*" style="font-size:12px;" onchange="previewAvatar(this,'em-preview')"/>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Full name</label><input type="text" id="em-name"/></div>
+      <div class="field"><label>Username</label><input type="text" id="em-user"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Password</label><input type="text" id="em-pass"/></div>
+      <div class="field"><label>Role</label><select id="em-role"><option value="user">Account holder</option><option value="admin">Administrator</option></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Email</label><input type="email" id="em-email"/></div>
+      <div class="field"><label>Phone</label><input type="text" id="em-phone"/></div>
+    </div>
+    <div style="padding:16px;background:var(--paper);border-radius:9px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;">Balance adjustment</div>
+      <div class="field-row">
+        <div class="field" style="margin-bottom:0;"><label>Type</label><select id="em-adj"><option value="none">No change</option><option value="set">Set exact balance</option><option value="credit">Add funds (+)</option><option value="debit">Remove funds (−)</option></select></div>
+        <div class="field" style="margin-bottom:0;"><label>Amount ($)</label><input type="number" id="em-adj-amt" min="0.01" step="0.01" placeholder="0.00"/></div>
+      </div>
+      <div class="field" style="margin-top:10px;margin-bottom:0;"><label>Ledger note</label><input type="text" id="em-adj-desc" placeholder="e.g. Manual correction"/></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-gold" id="em-save">Save changes</button>
+      <button class="btn btn-outline" onclick="closeModal('edit-modal')">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="em-delete" style="margin-left:auto;">Delete account</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOINT MODAL -->
+<div class="modal-bg" id="joint-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('joint-modal')">✕</button>
+    <h3>Create joint account</h3>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:20px;">Link two account holders to a shared account. Both will see it in their dashboards.</p>
+    <div class="field"><label>Joint account name</label><input type="text" id="jm-name" placeholder="e.g. Mr & Mrs Adewale"/></div>
+    <div class="field"><label>Opening balance ($)</label><input type="number" id="jm-bal" value="0" min="0" step="0.01"/></div>
+    <div class="field"><label>Owner 1</label><select id="jm-o1"></select></div>
+    <div class="field"><label>Owner 2</label><select id="jm-o2"></select></div>
+    <button class="btn btn-gold" id="jm-btn" style="width:100%;justify-content:center;">Create joint account</button>
+  </div>
+</div>
+
+<!-- REPLY MODAL -->
+<div class="modal-bg" id="reply-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reply-modal')">✕</button>
+    <h3>Reply to complaint</h3>
+    <input type="hidden" id="rm-id"/>
+    <div id="rm-details" style="background:var(--paper);border-radius:8px;padding:14px;margin-bottom:16px;font-size:14px;line-height:1.6;"></div>
+    <div class="field"><label>Your reply</label><textarea id="rm-reply" placeholder="Type your response…"></textarea></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-gold" id="rm-send">Send reply</button>
+      <button class="btn btn-outline" id="rm-resolve">Mark resolved</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADJUST BALANCE MODAL -->
+<div class="modal-bg" id="adjust-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('adjust-modal')">✕</button>
+    <h3>Adjust balance</h3>
+    <input type="hidden" id="adj-id"/>
+    <div id="adj-info" style="font-size:14px;margin-bottom:16px;"></div>
+    <div class="field"><label>Type</label><select id="adj-type"><option value="set">Set exact balance</option><option value="credit">Add funds (+)</option><option value="debit">Remove funds (−)</option></select></div>
+    <div class="field"><label>Amount ($)</label><input type="number" id="adj-amt" min="0.01" step="0.01" placeholder="0.00"/></div>
+    <div class="field"><label>Description (shown in ledger)</label><input type="text" id="adj-desc" placeholder="e.g. Deposit from branch, Correction…"/></div>
+    <button class="btn btn-gold" id="adj-btn" style="width:100%;justify-content:center;">Apply adjustment</button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+let ADMIN = null;
+let ACCOUNTS = [], WITHDRAWALS = [], COMPLAINTS_DATA = [], JOINTS = [], ACTIVITY = [], ALL_TX = [];
+
+async function init() {
+  const s = session.get();
+  if (!s) { location.href = 'login.html'; return; }
+  if (s.role !== 'admin') { location.href = 'dashboard.html'; return; }
+  ADMIN = s;
+  $('bar-name').textContent = ADMIN.name;
+  const av = $('bar-avatar');
+  if (ADMIN.avatar_url) av.innerHTML = `<img src="${esc(ADMIN.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+  else av.textContent = ADMIN.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  $('app').style.display = 'block';
+  await Promise.all([loadAccounts(), loadWithdrawals(), loadComplaints(), loadJoints(), loadActivity(), loadLedger()]);
+  renderActivity();
+  updateBadges();
+}
+
+async function loadAccounts() { try { ACCOUNTS = await db.query('accounts', { order: 'created_at.asc' }); } catch(e) { ACCOUNTS = []; } }
+async function loadWithdrawals() { try { WITHDRAWALS = await db.query('withdrawals', { select: 'id,account_id,amount,note,status,created_at,processed_at', order: 'created_at.desc' }); } catch(e) { WITHDRAWALS = []; } }
+async function loadComplaints() { try { COMPLAINTS_DATA = await db.query('complaints', { order: 'created_at.desc' }); } catch(e) { COMPLAINTS_DATA = []; } }
+async function loadJoints() { try { JOINTS = await db.query('joint_accounts', { order: 'created_at.desc' }); } catch(e) { JOINTS = []; } }
+async function loadActivity() { try { ACTIVITY = await db.query('activity_log', { order: 'created_at.desc', limit: 80 }); } catch(e) { ACTIVITY = []; } }
+async function loadLedger() { try { ALL_TX = await db.query('transactions', { order: 'created_at.desc', limit: 300 }); } catch(e) { ALL_TX = []; } }
+
+function acctName(id) { const a = ACCOUNTS.find(u=>u.id===id); return a ? a.name : '—'; }
+function acctNo(id)   { const a = ACCOUNTS.find(u=>u.id===id); return a ? a.account_no : '—'; }
+
+function updateBadges() {
+  const pendWD = WITHDRAWALS.filter(w=>w.status==='pending'||w.status==='queued').length;
+  const openC  = COMPLAINTS_DATA.filter(c=>c.status==='open').length;
+  const pendDep = COMPLAINTS_DATA.filter(c=>c.status==='open'&&c.subject.startsWith('Deposit request')).length;
+  const wd = $('wd-badge'); wd.textContent = pendWD; wd.style.display = pendWD ? 'inline' : 'none';
+  const db2 = $('dep-badge'); db2.textContent = pendDep; db2.style.display = pendDep ? 'inline' : 'none';
+  const cb = $('comp-badge'); cb.textContent = openC; cb.style.display = openC ? 'inline' : 'none';
+  $('s-pend-wd').textContent  = pendWD;
+  $('s-open-comp').textContent = openC;
+  $('s-accts').textContent     = ACCOUNTS.length;
+}
+
+const dotColor = { withdrawal_request:'#c49a3c', approved:'#1e6b54', rejected:'#9b3a30', deposit:'#6b8fce', complaint:'#a78bfa', adjustment:'#3b8bd4', created:'#1e6b54', deposit_request:'#6b8fce', queued:'#7a5e1a' };
+
+function renderActivity() {
+  const list = $('act-list');
+  if (!ACTIVITY.length) { list.innerHTML = '<li style="padding:24px;color:var(--text3);font-style:italic;">No activity yet.</li>'; return; }
+  list.innerHTML = ACTIVITY.map(a => `
+    <li class="act-item">
+      <div class="act-dot" style="background:${dotColor[a.type]||'#888'};"></div>
+      <div class="act-body">
+        <div class="act-title">${esc(a.description)}${a.amount ? ` · <b>${fmtMoney(a.amount)}</b>` : ''}</div>
+        <div class="act-meta">${fmtDate(a.created_at)}</div>
+      </div>
+    </li>`).join('');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  document.querySelector(`[data-page="${name}"]`)?.classList.add('active');
+  closeSidebar();
+  if(name==='withdrawals') renderWithdrawals();
+  if(name==='deposits')    renderDeposits();
+  if(name==='complaints')  renderComplaints();
+  if(name==='accounts')    renderAccounts();
+  if(name==='joint')       renderJoints();
+  if(name==='ledger')      renderLedger();
+}
+
+function renderWithdrawals() {
+  const pending  = WITHDRAWALS.filter(w=>w.status==='pending'||w.status==='queued');
+  const processed = WITHDRAWALS.filter(w=>w.status!=='pending'&&w.status!=='queued').slice(0,60);
+  $('wd-pending').innerHTML = pending.length
+    ? pending.map(w=>`
+      <tr>
+        <td style="font-size:12px;white-space:nowrap;">${fmtDate(w.created_at)}</td>
+        <td>${esc(acctName(w.account_id))}</td>
+        <td style="font-family:var(--fm);font-size:12px;">${esc(acctNo(w.account_id))}</td>
+        <td class="amt"><b>${fmtMoney(w.amount)}</b></td>
+        <td>${esc(w.note||'—')}</td>
+        <td>
+          <span class="badge badge-${w.status}">${w.status}</span>
+          ${w.status==='queued' ? `<div class="wd-eta">${w.eta_hours||24}h ETA shown to customer</div>` : ''}
+        </td>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <input type="number" min="1" step="1" placeholder="hrs" id="eta-${w.id}" value="${w.eta_hours||''}" style="width:56px;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;"/>
+          <button class="btn btn-sm btn-outline" onclick="queueWD('${w.id}')">${w.status==='queued'?'Update ETA':'Queue'}</button>
+          <button class="btn btn-sm btn-gold" onclick="approveWD('${w.id}','${w.account_id}',${w.amount})">Approve</button>
+          <button class="btn btn-sm btn-outline" onclick="rejectWD('${w.id}')">Reject</button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="7">No pending requests — all clear.</td></tr>';
+  $('wd-processed').innerHTML = processed.length
+    ? processed.map(w=>`<tr><td style="font-size:12px;">${fmtDate(w.processed_at||w.created_at)}</td><td>${esc(acctName(w.account_id))}</td><td class="amt">${fmtMoney(w.amount)}</td><td>${esc(w.note||'—')}</td><td><span class="badge badge-${w.status}">${w.status}</span></td><td style="font-size:12px;color:var(--text3);">Admin</td></tr>`).join('')
+    : '<tr class="empty-row"><td colspan="6">Nothing processed yet.</td></tr>';
+}
+
+async function queueWD(id) {
+  const input = $('eta-'+id);
+  const hours = Number(input?.value);
+  if (!hours || hours <= 0) { toast('Enter a valid number of hours first.','err'); return; }
+  const w = WITHDRAWALS.find(x=>x.id===id);
+  try {
+    await db.update('withdrawals', { status:'queued', eta_hours: hours }, { id });
+    if (w) { w.status = 'queued'; w.eta_hours = hours; }
+    await logActivity('queued', `Withdrawal for ${acctName(w?.account_id)} queued — customer shown ${hours}h ETA`, w?.amount, ADMIN.id);
+    await loadActivity();
+    renderWithdrawals(); renderActivity(); updateBadges();
+    toast(`Queued — customer now sees a ${hours}h processing estimate.`);
+  } catch(e) { toast('Failed to set ETA.','err'); console.error(e); }
+}
+
+async function approveWD(id, accountId, amount) {
+  const acct = ACCOUNTS.find(a=>a.id===accountId);
+  if (!acct) { toast('Account not found.','err'); return; }
+  if (Number(amount) > Number(acct.balance)) { toast('Insufficient balance to approve.','err'); return; }
+  if (!confirm(`Approve withdrawal of ${fmtMoney(amount)} for ${acct.name}?`)) return;
+  try {
+    const newBal = Math.round((Number(acct.balance) - Number(amount))*100)/100;
+    await db.update('withdrawals', { status:'approved', processed_at: new Date().toISOString() }, { id });
+    await db.update('accounts', { balance: newBal }, { id: accountId });
+    await db.insert('transactions', { account_id: accountId, description: `Withdrawal approved`, amount: -Number(amount), balance_after: newBal, type: 'withdrawal' });
+    await logActivity('approved', `Withdrawal of ${fmtMoney(amount)} approved for ${acct.name}`, amount, ADMIN.id);
+    acct.balance = newBal;
+    const w = WITHDRAWALS.find(x=>x.id===id); if(w) w.status='approved';
+    await loadWithdrawals(); await loadActivity();
+    renderWithdrawals(); renderActivity(); updateBadges();
+    toast('Withdrawal approved and balance updated.');
+  } catch(e) { toast('Failed to approve. Please try again.','err'); console.error(e); }
+}
+
+async function rejectWD(id) {
+  const w = WITHDRAWALS.find(x=>x.id===id);
+  if (!confirm(`Reject this withdrawal request of ${fmtMoney(w?.amount)}?`)) return;
+  try {
+    await db.update('withdrawals', { status:'rejected', processed_at: new Date().toISOString() }, { id });
+    await logActivity('rejected', `Withdrawal rejected for ${acctName(w?.account_id)}`, w?.amount, ADMIN.id);
+    if(w) w.status = 'rejected';
+    await loadWithdrawals(); renderWithdrawals(); updateBadges();
+    toast('Withdrawal rejected.');
+  } catch(e) { toast('Failed to reject.','err'); }
+}
+
+function renderDeposits() {
+  const depReqs = COMPLAINTS_DATA.filter(c=>c.subject.startsWith('Deposit request'));
+  $('dep-requests').innerHTML = depReqs.length
+    ? depReqs.map(c=>`
+      <div class="complaint-card">
+        <div class="complaint-head">
+          <div>
+            <div style="font-weight:600;font-size:14px;">${esc(acctName(c.account_id))} — ${esc(c.subject)}</div>
+            <div style="font-size:12px;color:var(--text3);">${fmtDate(c.created_at)}</div>
+            <div style="font-size:13px;margin-top:4px;">${esc(c.message)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end;">
+            <span class="badge badge-${c.status}">${c.status}</span>
+            ${c.status==='open'?`<button class="btn btn-sm btn-gold" onclick="openAdjust('${c.account_id}','${c.id}')">Credit account</button>`:''}
+          </div>
+        </div>
+      </div>`).join('')
+    : '<div style="text-align:center;padding:40px;color:var(--text3);">No deposit requests.</div>';
+}
+
+function renderComplaints() {
+  const comps = COMPLAINTS_DATA.filter(c=>!c.subject.startsWith('Deposit request'));
+  $('complaints-list').innerHTML = comps.length
+    ? comps.map(c=>`
+      <div class="complaint-card">
+        <div class="complaint-head" onclick="this.nextElementSibling.classList.toggle('open')">
+          <div>
+            <div style="font-weight:600;font-size:14px;">${esc(acctName(c.account_id))} — ${esc(c.subject)}</div>
+            <div style="font-size:12px;color:var(--text3);">${fmtDate(c.created_at)}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+            <span class="badge badge-${c.status}">${c.status}</span>
+            <button class="btn btn-sm btn-outline" onclick="event.stopPropagation();openReply('${c.id}')">Reply</button>
+          </div>
+        </div>
+        <div class="complaint-body">
+          <div style="font-size:14px;line-height:1.65;">${esc(c.message)}</div>
+          ${c.admin_reply?`<div class="reply-box"><b style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--amber);">Your reply</b><br>${esc(c.admin_reply)}</div>`:''}
+        </div>
+      </div>`).join('')
+    : '<div style="text-align:center;padding:40px;color:var(--text3);">No complaints.</div>';
+}
+
+function openReply(id) {
+  const c = COMPLAINTS_DATA.find(x=>x.id===id);
+  $('rm-id').value = id;
+  $('rm-details').innerHTML = `<b style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);">From: ${esc(acctName(c.account_id))}</b><br><b>${esc(c.subject)}</b><br><br>${esc(c.message)}`;
+  $('rm-reply').value = c.admin_reply || '';
+  $('reply-modal').classList.add('open');
+}
+$('rm-send').addEventListener('click', async () => {
+  const id = $('rm-id').value; const reply = $('rm-reply').value.trim();
+  if (!reply) { toast('Enter a reply message.','err'); return; }
+  try {
+    await db.update('complaints', { admin_reply: reply }, { id });
+    const c = COMPLAINTS_DATA.find(x=>x.id===id); if(c) c.admin_reply = reply;
+    await logActivity('complaint', `Admin replied to complaint from ${acctName(c?.account_id)}`, null, ADMIN.id);
+    closeModal('reply-modal'); renderComplaints(); toast('Reply sent.');
+  } catch(e) { toast('Failed to send reply.','err'); }
+});
+$('rm-resolve').addEventListener('click', async () => {
+  const id = $('rm-id').value;
+  try {
+    await db.update('complaints', { status: 'resolved' }, { id });
+    const c = COMPLAINTS_DATA.find(x=>x.id===id); if(c) c.status = 'resolved';
+    closeModal('reply-modal'); renderComplaints(); updateBadges(); toast('Complaint marked resolved.');
+  } catch(e) { toast('Failed.','err'); }
+});
+
+function renderAccounts() {
+  $('accounts-table').innerHTML = ACCOUNTS.map(a=>`
+    <tr>
+      <td style="font-family:var(--fm);font-size:12px;">${esc(a.account_no||'—')}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${a.avatar_url?`<img src="${esc(a.avatar_url)}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:1px solid var(--border);">`:`<div style="width:30px;height:30px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:13px;color:var(--gold2);flex-shrink:0;">${a.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>`}
+          <div>
+            <div style="font-weight:600;font-size:13.5px;">${esc(a.name)}</div>
+            <div style="font-size:11px;color:var(--text3);">Joined ${fmtShortDate(a.created_at)}</div>
+          </div>
+        </div>
+      </td>
+      <td style="font-family:var(--fm);font-size:12px;">${esc(a.username)}</td>
+      <td><span class="badge badge-${a.role}">${a.role}</span></td>
+      <td class="amt" style="font-weight:600;">${fmtMoney(a.balance)}</td>
+      <td style="font-size:13px;color:var(--text3);">${esc(a.email||'—')}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm btn-outline" onclick="openEdit('${a.id}')">Edit</button>
+          <button class="btn btn-sm" style="background:var(--green-pale);color:var(--green);" onclick="openAdjust('${a.id}')">Balance</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function previewAvatar(input, previewId) {
+  const file = input.files[0]; if (!file) return;
+  const preview = $(previewId);
+  const reader = new FileReader();
+  reader.onload = e => { preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`; };
+  reader.readAsDataURL(file);
+}
+
+function openEdit(id) {
+  const a = ACCOUNTS.find(x=>x.id===id); if(!a) return;
+  $('em-id').value = id;
+  $('em-name').value = a.name; $('em-user').value = a.username;
+  $('em-pass').value = a.password_hash; $('em-role').value = a.role;
+  $('em-email').value = a.email||''; $('em-phone').value = a.phone||'';
+  $('em-adj').value = 'none'; $('em-adj-amt').value = ''; $('em-adj-desc').value = '';
+  const preview = $('em-preview');
+  preview.innerHTML = a.avatar_url ? `<img src="${esc(a.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : a.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  $('edit-modal').classList.add('open');
+}
+
+$('em-save').addEventListener('click', async () => {
+  const id      = $('em-id').value;
+  const name    = $('em-name').value.trim();
+  const username= $('em-user').value.trim();
+  const pw      = $('em-pass').value;
+  const role    = $('em-role').value;
+  const email   = $('em-email').value.trim();
+  const phone   = $('em-phone').value.trim();
+  const adjType = $('em-adj').value;
+  const adjAmt  = parseFloat($('em-adj-amt').value)||0;
+  const adjDesc = $('em-adj-desc').value.trim();
+  if (!name||!username||!pw) { toast('Name, username and password required.','err'); return; }
+  $('em-save').disabled = true;
+  try {
+    const acct = ACCOUNTS.find(a=>a.id===id);
+    let avatarUrl = acct.avatar_url;
+    const file = $('em-avatar-file').files[0];
+    if (file) { avatarUrl = await db.uploadAvatar(file, `${id}_${Date.now()}.${file.name.split('.').pop()}`); }
+
+    let newBal = Number(acct.balance);
+    let delta = 0;
+    if (adjType==='set'&&adjAmt>=0)   { delta=adjAmt-newBal; newBal=adjAmt; }
+    else if (adjType==='credit'&&adjAmt>0) { delta=adjAmt; newBal=Math.round((newBal+adjAmt)*100)/100; }
+    else if (adjType==='debit'&&adjAmt>0) {
+      if (adjAmt>newBal) { toast('Debit exceeds balance.','err'); $('em-save').disabled=false; return; }
+      delta=-adjAmt; newBal=Math.round((newBal-adjAmt)*100)/100;
+    }
+    await db.update('accounts', { name, username, password_hash: pw, role, email, phone, balance: newBal, avatar_url: avatarUrl }, { id });
+    if (delta!==0) {
+      await db.insert('transactions', { account_id: id, description: adjDesc||'Balance adjustment', amount: delta, balance_after: newBal, type: delta>0?'deposit':'withdrawal' });
+      await logActivity('adjustment', `Balance adjusted for ${name} — ${adjDesc||'Manual'}`, Math.abs(delta), ADMIN.id);
+    }
+    await logActivity('adjustment', `Account updated: ${name}`, null, ADMIN.id);
+    acct.name=name; acct.username=username; acct.password_hash=pw; acct.role=role; acct.email=email; acct.phone=phone; acct.balance=newBal; acct.avatar_url=avatarUrl;
+    closeModal('edit-modal'); renderAccounts(); await loadActivity(); renderActivity();
+    toast('Account updated successfully.');
+  } catch(e) { toast('Failed to save changes.','err'); console.error(e); }
+  $('em-save').disabled = false;
+});
+
+$('em-delete').addEventListener('click', async () => {
+  const id = $('em-id').value;
+  const a = ACCOUNTS.find(x=>x.id===id);
+  if (a?.id === ADMIN.id) { toast("You can't delete your own account.",'err'); return; }
+  if (!confirm(`Delete account for ${a?.name}? This cannot be undone.`)) return;
+  try {
+    await db.delete('accounts', { id });
+    ACCOUNTS = ACCOUNTS.filter(x=>x.id!==id);
+    closeModal('edit-modal'); renderAccounts(); updateBadges();
+    toast('Account deleted.');
+  } catch(e) { toast('Failed to delete account.','err'); }
+});
+
+// ── JOINT ──────────────────────────────────────────────────────
+function renderJoints() {
+  $('joint-table').innerHTML = JOINTS.length
+    ? JOINTS.map(j=>`<tr>
+        <td style="font-family:var(--fm);font-size:12px;">${esc(j.account_no)}</td>
+        <td style="font-weight:600;">${esc(j.name)}</td>
+        <td>${esc(acctName(j.owner1_id))}</td>
+        <td>${esc(acctName(j.owner2_id))}</td>
+        <td class="amt">${fmtMoney(j.balance)}</td>
+        <td><button class="btn btn-sm btn-outline" onclick="openJointAdjust('${j.id}')">Adjust</button></td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="6">No joint accounts yet.</td></tr>';
+}
+
+function openJointModal() {
+  const opts = ACCOUNTS.filter(a=>a.role==='user').map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  $('jm-o1').innerHTML = opts; $('jm-o2').innerHTML = opts;
+  $('joint-modal').classList.add('open');
+}
+$('jm-btn').addEventListener('click', async () => {
+  const name = $('jm-name').value.trim();
+  const bal  = parseFloat($('jm-bal').value)||0;
+  const o1   = $('jm-o1').value; const o2 = $('jm-o2').value;
+  if (!name||!o1||!o2) { toast('Fill in all fields.','err'); return; }
+  if (o1===o2) { toast('Select two different account holders.','err'); return; }
+  $('jm-btn').disabled = true;
+  try {
+    const acctNo = 'J-' + genAccountNo().slice(0,8);
+    const rows = await db.insert('joint_accounts', { name, balance: bal, account_no: acctNo, owner1_id: o1, owner2_id: o2 }, true);
+    if (bal>0 && rows?.[0]) {
+      await db.insert('transactions', { joint_account_id: rows[0].id, description: 'Opening balance', amount: bal, balance_after: bal, type: 'deposit' });
+    }
+    await logActivity('created', `Joint account created: ${name}`, bal||null, ADMIN.id);
+    await loadJoints(); renderJoints(); closeModal('joint-modal');
+    toast('Joint account created.');
+  } catch(e) { toast('Failed to create joint account.','err'); console.error(e); }
+  $('jm-btn').disabled = false;
+});
+
+// ── ADJUST ─────────────────────────────────────────────────────
+let adjustTargetId = null, adjustComplaintId = null;
+function openAdjust(accountId, complaintId=null) {
+  const a = ACCOUNTS.find(x=>x.id===accountId);
+  adjustTargetId = accountId; adjustComplaintId = complaintId;
+  $('adj-id').value = accountId;
+  $('adj-info').innerHTML = `<b>${esc(a?.name||'Unknown')}</b> — Current balance: <b>${fmtMoney(a?.balance)}</b>`;
+  $('adj-amt').value = ''; $('adj-desc').value = ''; $('adj-type').value = 'credit';
+  $('adjust-modal').classList.add('open');
+}
+$('adj-btn').addEventListener('click', async () => {
+  const id = $('adj-id').value;
+  const type = $('adj-type').value;
+  const amt = parseFloat($('adj-amt').value)||0;
+  const desc = $('adj-desc').value.trim() || (type==='credit'?'Deposit':'Adjustment');
+  const acct = ACCOUNTS.find(a=>a.id===id);
+  if (!(amt>0)) { toast('Enter a valid amount.','err'); return; }
+  let newBal = Number(acct.balance);
+  let delta = 0;
+  if (type==='set')    { delta=amt-newBal; newBal=amt; }
+  else if (type==='credit') { delta=amt; newBal=Math.round((newBal+amt)*100)/100; }
+  else if (type==='debit')  {
+    if (amt>newBal) { toast('Debit exceeds balance.','err'); return; }
+    delta=-amt; newBal=Math.round((newBal-amt)*100)/100;
+  }
+  $('adj-btn').disabled = true;
+  try {
+    await db.update('accounts', { balance: newBal }, { id });
+    await db.insert('transactions', { account_id: id, description: desc, amount: delta, balance_after: newBal, type: delta>0?'deposit':'withdrawal' });
+    if (adjustComplaintId) {
+      await db.update('complaints', { status:'resolved', admin_reply: `Your deposit of ${fmtMoney(amt)} has been credited to your account.` }, { id: adjustComplaintId });
+      const c = COMPLAINTS_DATA.find(x=>x.id===adjustComplaintId); if(c) { c.status='resolved'; c.admin_reply=`Deposit of ${fmtMoney(amt)} credited.`; }
+    }
+    await logActivity('adjustment', `${desc} for ${acct.name}`, Math.abs(delta), ADMIN.id);
+    acct.balance = newBal;
+    closeModal('adjust-modal'); renderAccounts(); renderDeposits();
+    await loadActivity(); renderActivity(); updateBadges();
+    toast(`Balance updated — ${fmtMoney(newBal)} new balance.`);
+  } catch(e) { toast('Adjustment failed.','err'); console.error(e); }
+  $('adj-btn').disabled = false;
+});
+
+// ── ADD ACCOUNT ────────────────────────────────────────────────
+$('na-btn').addEventListener('click', async () => {
+  const name  = $('na-name').value.trim();
+  const user  = $('na-user').value.trim();
+  const pw    = $('na-pass').value;
+  const role  = $('na-role').value;
+  const email = $('na-email').value.trim();
+  const phone = $('na-phone').value.trim();
+  const bal   = parseFloat($('na-bal').value)||0;
+  if (!name||!user||!pw) { toast('Name, username and password required.','err'); return; }
+  $('na-btn').disabled = true;
+  try {
+    const existing = await db.query('accounts', { filter: { username: `eq.${user}` }, limit: 1 });
+    if (existing.length) { toast('Username already taken.','err'); $('na-btn').disabled=false; return; }
+    const acctNo = genAccountNo();
+    let avatarUrl = null;
+    const file = $('na-avatar-file').files[0];
+    if (file) {
+      const tempId = uid('av');
+      avatarUrl = await db.uploadAvatar(file, `${tempId}.${file.name.split('.').pop()}`);
+    }
+    const rows = await db.insert('accounts', { name, username: user, password_hash: pw, role, email, phone, balance: bal, account_no: acctNo, avatar_url: avatarUrl }, true);
+    if (bal>0 && rows?.[0]) {
+      await db.insert('transactions', { account_id: rows[0].id, description: 'Opening balance', amount: bal, balance_after: bal, type: 'deposit' });
+    }
+    await logActivity('created', `Account created for ${name} (${user})`, bal||null, ADMIN.id);
+    await loadAccounts(); updateBadges(); await loadActivity(); renderActivity();
+    $('na-name').value=''; $('na-user').value=''; $('na-pass').value=''; $('na-email').value=''; $('na-phone').value=''; $('na-bal').value='0'; $('na-avatar-file').value=''; $('na-preview').innerHTML='👤'; $('na-role').value='user';
+    toast(`Account for ${name} created.`);
+  } catch(e) { toast('Failed to create account.','err'); console.error(e); }
+  $('na-btn').disabled = false;
+});
+
+// ── LEDGER ─────────────────────────────────────────────────────
+function renderLedger() {
+  $('ledger-table').innerHTML = ALL_TX.length
+    ? ALL_TX.map(t=>{
+        const a = ACCOUNTS.find(x=>x.id===t.account_id);
+        const pos = Number(t.amount)>=0;
+        return `<tr>
+          <td style="font-size:12px;white-space:nowrap;">${fmtDate(t.created_at)}</td>
+          <td>${esc(a?a.name:'Joint/Other')}</td>
+          <td>${esc(t.description||'—')}</td>
+          <td><span class="badge badge-${t.type||'credit'}">${esc(t.type||'—')}</span></td>
+          <td class="amt ${pos?'cr':'dr'}">${pos?'+':''}${fmtMoney(t.amount)}</td>
+        </tr>`;}).join('')
+    : '<tr class="empty-row"><td colspan="5">No transactions yet.</td></tr>';
+}
+
+function closeModal(id) { $(id).classList.remove('open'); }
+
+$('signout-btn').addEventListener('click', () => { session.clear(); location.href='index.html'; });
+
+init();
+</script>
+</body>
+</html>
