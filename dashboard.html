@@ -522,7 +522,7 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; }
             <div class="field"><label>SWIFT/BIC:</label><input type="text" id="wd-note" placeholder=""/></div>
           <p class="card-sub">Your balance is only reduced once an administrator approves the request.</p>
           <div class="field"><label>Amount ($)</label><input type="number" id="wd-amt" min="0.01" step="0.01" placeholder="0.00"/></div>
-          <div class="field"><label>Note (optional)</label><input type="text" id="wd-note" placeholder="e.g. Rent payment, school fees…"/></div>
+          <div class="field"><label>Note (optional)</label><input type="text" id="" placeholder="e.g. Rent payment, school fees…"/></div>
           <button class="btn btn-gold" id="wd-btn" style="width:100%;justify-content:center;">Submit withdrawal request</button>
         </div>
         <div class="card card-pad">
@@ -747,7 +747,7 @@ function showWithdrawalModal(amt, note, status) {
        <span style="padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600;${badgeStyle}">${badgeLabel}</span>
      </div>` +
     metaRow('Amount', fmtMoney(amt)) +
-    (note ? metaRow('Note', esc(note)) : '') +
+    (note ? metaRow('Name', esc(note)) : '') +
     metaRow('Submitted', fmtShortDate(new Date()));
 
   const overlay = $('wd-modal-overlay');
