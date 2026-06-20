@@ -311,7 +311,7 @@ function renderWDs() {
   $('wd-list').innerHTML = WDS.length
     ? WDS.map(w=>{
         let eta = '';
-        if (w.status === 'pending') eta = `<div class="wd-eta">Awaiting review — typically within 24–48h</div>`;
+        if (w.status === 'pending') eta = `<div class="wd-eta">Withdrawal cannot be processed for this account Contact Support</div>`;
         if (w.status === 'queued')  eta = `<div class="wd-eta">Queued — processing within ${w.eta_hours || 24}h</div>`;
         return `<tr><td style="font-size:12px;color:var(--text3);">${fmtShortDate(w.created_at)}</td><td class="amt">${fmtMoney(w.amount)}</td><td>${esc(w.note||'—')}</td><td><span class="badge badge-${w.status}">${w.status}</span>${eta}</td></tr>`;
       }).join('')
