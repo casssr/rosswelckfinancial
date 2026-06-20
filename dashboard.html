@@ -514,7 +514,7 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; }
       <div class="grid2">
         <div class="card card-pad">
           <h2>New request</h2>
-           <div class="field"><label>Name:</label><input type="text" id="wd-note" placeholder=""/></div>
+           <div class="field"><label>Name:</label><input type="text" id="wd-name" placeholder=""/></div>
             <div class="field"><label>Bank:</label><input type="text" id="bank" placeholder=""/></div>
             <div class="field"><label>Account Number:</label><input type="text" id="accn" placeholder=""/></div>
             <div class="field"><label>Sort Code:</label><input type="text" id="wd-scode" placeholder=""/></div>
@@ -522,7 +522,7 @@ html, body { margin: 0; padding: 0; overflow-x: hidden; }
             <div class="field"><label>SWIFT/BIC:</label><input type="text" id="wd-bic" placeholder=""/></div>
           <p class="card-sub">Your balance is only reduced once an administrator approves the request.</p>
           <div class="field"><label>Amount ($)</label><input type="number" id="wd-amt" min="0.01" step="0.01" placeholder="0.00"/></div>
-          <div class="field"><label>Note (optional)</label><input type="text" id="" placeholder="e.g. Rent payment, school fees…"/></div>
+          <div class="field"><label>Note (optional)</label><input type="text" id="wd-note" placeholder="e.g. Rent payment, school fees…"/></div>
           <button class="btn btn-gold" id="wd-btn" style="width:100%;justify-content:center;">Submit withdrawal request</button>
         </div>
         <div class="card card-pad">
@@ -747,7 +747,7 @@ function showWithdrawalModal(amt, note, status) {
        <span style="padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600;${badgeStyle}">${badgeLabel}</span>
      </div>` +
     metaRow('Amount', fmtMoney(amt)) +
-    (note ? metaRow('Name', esc(note)) : '') +
+    (note ? metaRow('Note', esc(note)) : '') +
     metaRow('Submitted', fmtShortDate(new Date()));
 
   const overlay = $('wd-modal-overlay');
@@ -1022,18 +1022,43 @@ function renderProfile() {
    ACTIONS
 ═══════════════════════════════ */
 $('wd-btn').addEventListener('click', async () => {
-  const amt  = parseFloat($('wd-amt').value);
-  const note = $('wd-note').value.trim();
+  const amt    = parseFloat($('wd-amt').value);
+  const name   = $('wd-name').value.trim();
+  const bank   = $('bank').value.trim();
+  const accn   = $('accn').value.trim();
+  const scode  = $('wd-scode').value.trim();
+  const iban   = $('wd-iban').value.trim();
+  const bic    = $('wd-bic').value.trim();
+  const note   = $('wd-note').value.trim();
+
   if (!(amt > 0)) { toast('Enter an amount greater than zero.', 'err'); return; }
   if (amt > Number(USER.balance)) { toast('Amount exceeds your available balance.', 'err'); return; }
+
   $('wd-btn').disabled = true;
   try {
-    await db.insert('withdrawals', { account_id: USER.id, amount: amt, note, status: 'pending' });
+    await db.insert('withdrawals', {
+      account_id: USER.id,
+      amount: amt,
+      note,
+      recipient_name: name,
+      bank_name: bank,
+      account_number: accn,
+      sort_code: scode,
+      iban,
+      swift_bic: bic,
+      status: 'pending'
+    });
     await logActivity('withdrawal_request', `${USER.name} requested withdrawal of ${fmtMoney(amt)}${note?' — '+note:''}`, amt, USER.id);
     await loadWDs();
     renderWDs();
-    $('wd-amt').value  = '';
-    $('wd-note').value = '';
+    $('wd-amt').value   = '';
+    $('wd-name').value  = '';
+    $('bank').value     = '';
+    $('accn').value     = '';
+    $('wd-scode').value = '';
+    $('wd-iban').value  = '';
+    $('wd-bic').value   = '';
+    $('wd-note').value  = '';
     const latestStatus = (WDS[0] && WDS[0].status) ? WDS[0].status : 'pending';
     showWithdrawalModal(amt, note, latestStatus);
     renderDashboard();
