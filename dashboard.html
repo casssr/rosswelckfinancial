@@ -961,8 +961,8 @@ function renderJoint() {
       <div class="balance-amount">${fmtMoney(JOINT.balance)}</div>
       <div class="balance-meta">
         <div class="balance-meta-item"><div class="bm-label">Account number</div><div class="bm-val">${esc(JOINT.account_no)}</div></div>
-        <div class="balance-meta-item"><div class="bm-label">Account holder</div><div class="bm-val" id="bal-name">${esc(JOINT.owner1_id_fkey)}</div></div>
-      <div class="balance-meta-item"><div class="bm-label">Account holder</div><div class="bm-val" id="bal-name">${esc(JOINT.owner2_username)}</div></div>
+        <div class="balance-meta-item"><div class="bm-label">Account holder</div><div class="bm-val" id="bal-name">${esc(JOINT.user1)}</div></div>
+      <div class="balance-meta-item"><div class="bm-label">Account holder</div><div class="bm-val" id="bal-name">${esc(JOINT.user2)}</div></div>
       </div>
     </div>
     <div class="card card-pad">
